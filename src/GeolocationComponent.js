@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import MapComponent from "./MapComponent";
 
 const GeolocationComponent = () => {
   const [latitude, setLatitude] = useState(null);
@@ -56,6 +57,7 @@ const GeolocationComponent = () => {
 
   return (
     <div>
+      
       <h2>Weather at your location:</h2>
       <div>
         <p>Your location</p>
@@ -80,8 +82,11 @@ const GeolocationComponent = () => {
         <> 
           <p>Latitude: {inputLatitude || latitude}</p>
           <p>Longitude: {inputLongitude || longitude}</p>        
-          <p>Temperature: {weather.hourly.temperature_2m[0]}</p>
-          
+          <p>Temperature: {weather.hourly.temperature_2m[0]}</p> 
+          <image>
+            <MapComponent latitude={latitude} longitude={longitude} />
+          </image>
+                                  
         </>
       )}
     </div>
