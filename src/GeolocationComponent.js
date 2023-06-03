@@ -83,7 +83,7 @@ const GeolocationComponent = () => {
       </div>
       <div>
         <button onClick={fetchWeatherData} disabled={loading}>
-          {loading ? "Loading..." : "Fetch Weather"}
+          {loading ? "Loading..." : "Buscar Tempo"}
         </button>
       </div>
       {weather && (
