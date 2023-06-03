@@ -5,14 +5,16 @@ const GeolocationComponent = () => {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [weather, setWeather] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [inputLatitude, setInputLatitude] = useState("");
+  const [inputLongitude, setInputLongitude] = useState("");
 
   useEffect(() => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
-        async (position) => {
+        (position) => {
           setLatitude(position.coords.latitude);
           setLongitude(position.coords.longitude);
-          await fetchWeatherData(position.coords.latitude, position.coords.longitude);
         },
         (error) => {
           console.error("Error getting geolocation:", error);
@@ -23,34 +25,64 @@ const GeolocationComponent = () => {
     }
   }, []);
 
-  const fetchWeatherData = async (latitude, longitude) => {
+  const fetchWeatherData = async () => {
+    setLoading(true);
+    if (inputLatitude && inputLongitude) {
+      await fetchWeather(inputLatitude, inputLongitude);
+    } else if (latitude && longitude) {
+      await fetchWeather(latitude, longitude);
+    }
+    setLoading(false);
+  };
+
+  const fetchWeather = async (latitude, longitude) => {
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,weathercode`;
-  
+
     try {
       const response = await axios.get(url);
       setWeather(response.data);
-      console.log(response.data); 
     } catch (error) {
       console.error("Error fetching weather data:", error);
     }
   };
 
+  const handleLatitudeChange = (e) => {
+    setInputLatitude(e.target.value);
+  };
+
+  const handleLongitudeChange = (e) => {
+    setInputLongitude(e.target.value);
+  };
+
   return (
     <div>
-      {latitude && longitude ? (
-        <>
-          <h2>Weather at your location:</h2>
-          {weather ? (
-            <>
-              <p>Temperature: {weather.hourly.temperature_2m[0]}°C</p>
-              <p>Time: {weather.hourly.time[0]}</p>
-            </>
-          ) : (
-            <p>Loading weather data...</p>
-          )}
+      <h2>Weather at your location:</h2>
+      <div>
+        <p>Your location</p>
+        <p>Latitude: {latitude}</p>
+        <p>Longitude: {longitude}</p>  
+      </div>
+      
+      <div>
+        <label>Latitude:</label>
+        <input type="text" value={inputLatitude} onChange={handleLatitudeChange} />
+      </div>
+      <div>
+        <label>Longitude:</label>
+        <input type="text" value={inputLongitude} onChange={handleLongitudeChange} />
+      </div>
+      <div>
+        <button onClick={fetchWeatherData} disabled={loading}>
+          {loading ? "Loading..." : "Fetch Weather"}
+        </button>
+      </div>
+      {weather && (
+        <> 
+          <p>Latitude: {inputLatitude || latitude}</p>
+          <p>Longitude: {inputLongitude || longitude}</p>        
+          <p>Temperature: {weather.hourly.temperature_2m[0]}</p>
+          
         </>
-      ) : (
-        <p>Fetching geolocation...</p>
       )}
     </div>
   );
