@@ -31,6 +31,8 @@ const GeolocationComponent = () => {
     if (inputLatitude && inputLongitude) {
       await fetchWeather(inputLatitude, inputLongitude);
     } else if (latitude && longitude) {
+      setInputLatitude(latitude);
+      setInputLongitude(longitude);
       await fetchWeather(latitude, longitude);
     }
     setLoading(false);
@@ -46,7 +48,12 @@ const GeolocationComponent = () => {
       console.error("Error fetching weather data:", error);
     }
   };
-
+  const handleMapClick = (lat, lng) => {
+    setInputLatitude(lat);
+    setInputLongitude(lng);
+    fetchWeatherData(lat, lng); 
+    console.log(`Clicked coordinates: Latitude ${lat}, Longitude ${lng}`);
+  };
   const handleLatitudeChange = (e) => {
     setInputLatitude(e.target.value);
   };
@@ -84,7 +91,7 @@ const GeolocationComponent = () => {
           <p>Longitude: {inputLongitude || longitude}</p>        
           <p>Temperature: {weather.hourly.temperature_2m[0]}</p> 
           <image>
-            <MapComponent latitude={latitude} longitude={longitude} />
+            <MapComponent latitude={inputLatitude} longitude={inputLongitude} onMapClick={handleMapClick} />
           </image>
                                   
         </>
