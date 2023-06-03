@@ -34,7 +34,7 @@ const MapComponent = ({ latitude, longitude, onMapClick }) => {
         attribution="Map data &copy; <a href='https://www.openstreetmap.org/'>OpenStreetMap</a> contributors"
       />
       <Marker position={[latitude, longitude]}>
-        <Popup>Your Location</Popup>
+        <Popup>Seu Local</Popup>
       </Marker>
       <MapClickHandler />
     </MapContainer>

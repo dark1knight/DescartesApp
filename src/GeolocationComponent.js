@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import MapComponent from "./MapComponent";
+import WeatherComponent from "./WeatherComponent";
 
 const GeolocationComponent = () => {
   const [latitude, setLatitude] = useState(null);
@@ -39,7 +40,7 @@ const GeolocationComponent = () => {
   };
 
   const fetchWeather = async (latitude, longitude) => {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,weathercode`;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,rain_sum&timezone=auto`;
 
     try {
       const response = await axios.get(url);
@@ -65,9 +66,9 @@ const GeolocationComponent = () => {
   return (
     <div>
       
-      <h2>Weather at your location:</h2>
+      <h2>Previsão do tempo:</h2>
       <div>
-        <p>Your location</p>
+        <p>Sua localização</p>
         <p>Latitude: {latitude}</p>
         <p>Longitude: {longitude}</p>  
       </div>
@@ -89,7 +90,10 @@ const GeolocationComponent = () => {
         <> 
           <p>Latitude: {inputLatitude || latitude}</p>
           <p>Longitude: {inputLongitude || longitude}</p>        
-          <p>Temperature: {weather.hourly.temperature_2m[0]}</p> 
+          <div className="weather-container">
+            {/* ... your existing code here */}
+            <WeatherComponent weather={weather} />
+          </div>
           <image>
             <MapComponent latitude={inputLatitude} longitude={inputLongitude} onMapClick={handleMapClick} />
           </image>
